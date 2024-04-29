@@ -1,12 +1,11 @@
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, StatusBar, ScrollView, ActivityIndicator, Alert, Keyboard } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState } from 'react'
 
-
-const alturaStatusBar = StatusBar.currentHeight
+const alturaStatusBar = StatusBar.currentHeight;
 const KEY_GPT = 'SUA_CHAVE_DE_API';
 
-export default function App() {
+export function Lojas() {
 
   const [load, defLoad] = useState(false);
   const [receita, defReceita] = useState("");
@@ -19,14 +18,14 @@ export default function App() {
 
   async function gerarReceita() {
     if (ingr1 === "" || ingr2 === "" || ingr3 === "" || ingr4 === "" || ocasiao === "") {
-      Alert.alert("Atenção", "Informe todos os ingredientes!", [{ text: "Beleza!" }])
+      Alert.alert("Atenção", "Informe todas as informações!", [{ text: "Beleza!" }])
       return;
     }
     defReceita("");
     defLoad(true);
     Keyboard.dismiss();
 
-    const prompt = `Sugira uma receita detalhada para o ${ocasiao} usando os ingredientes: ${ingr1}, ${ingr2}, ${ingr3} e ${ingr4} e pesquise a receita no YouTube. Caso encontre, informe o link.`;
+    const prompt = `Sugira roupas, dicas personalizadas de estilo com base na ${ocasiao} e preferencias e clima: ${ingr1}, ${ingr2}, ${ingr3} e ${ingr4} e pesquise lojas onlines e aplicativos de modas para os itens recomendados. Caso encontre, informe o link.`;
 
     fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -61,37 +60,38 @@ export default function App() {
   }
 
   return (
-    <View style={ESTILOS.container}>
+    <ScrollView>
+         <View style={ESTILOS.container}>
       <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
-      <Text style={ESTILOS.header}>Cozinha fácil</Text>
+      <Text style={ESTILOS.header}>Roupas</Text>
       <View style={ESTILOS.form}>
-        <Text style={ESTILOS.label}>Insira os ingredientes abaixo:</Text>
+        <Text style={ESTILOS.label}>Insira as informações abaixo:</Text>
         <TextInput
-          placeholder="Ingrediente 1"
+          placeholder="Tendências de moda"
           style={ESTILOS.input}
           value={ingr1}
           onChangeText={(texto) => defIngr1(texto)}
         />
         <TextInput
-          placeholder="Ingrediente 2"
+          placeholder="Combinações de roupas"
           style={ESTILOS.input}
           value={ingr2}
           onChangeText={(texto) => defIngr2(texto)}
         />
         <TextInput
-          placeholder="Ingrediente 3"
+          placeholder="Acessórios"
           style={ESTILOS.input}
           value={ingr3}
           onChangeText={(texto) => defIngr3(texto)}
         />
         <TextInput
-          placeholder="Ingrediente 4"
+          placeholder="Clima"
           style={ESTILOS.input}
           value={ingr4}
           onChangeText={(texto) => defIngr4(texto)}
         />
         <TextInput
-          placeholder="Almoço ou Jantar"
+          placeholder="Aonde irá usar (ex: Festa, Casamento...)"
           style={ESTILOS.input}
           value={ocasiao}
           onChangeText={(texto) => defOcasiao(texto)}
@@ -99,26 +99,27 @@ export default function App() {
       </View>
 
       <TouchableOpacity style={ESTILOS.button} onPress={gerarReceita}>
-        <Text style={ESTILOS.buttonText}>Gerar receita</Text>
-        <MaterialCommunityIcons name="food-variant" size={24} color="#FFF" />
+        <Text style={ESTILOS.buttonText}>Gerar roupa</Text>
+        <MaterialCommunityIcons name="store" size={24} color="#FFF" />
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4, }} style={ESTILOS.containerScroll} showsVerticalScrollIndicator={false} >
         {load && (
           <View style={ESTILOS.content}>
-            <Text style={ESTILOS.title}>Produzindo receita...</Text>
+            <Text style={ESTILOS.title}>Procurando roupas...</Text>
             <ActivityIndicator color="#000" size="large" />
           </View>
         )}
 
         {receita && (
           <View style={ESTILOS.content}>
-            <Text style={ESTILOS.title}>Sua receita 👇</Text>
+            <Text style={ESTILOS.title}>A roupa ideal aqui 👇</Text>
             <Text style={{ lineHeight: 24 }}>{receita} </Text>
           </View>
         )}
       </ScrollView>
     </View>
+    </ScrollView>
   );
 }
 
@@ -187,4 +188,4 @@ const ESTILOS = StyleSheet.create({
     width: '90%',
     marginTop: 8,
   }
-})
+});
